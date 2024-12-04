@@ -1,7 +1,7 @@
 package client;
 
-import dto.EndpointHitDto;
-import dto.ViewStatsDto;
+import ru.practicum.dto.EndpointHitDto;
+import ru.practicum.dto.ViewStatsDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;

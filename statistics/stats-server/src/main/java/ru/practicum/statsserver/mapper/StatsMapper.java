@@ -1,6 +1,6 @@
 package ru.practicum.statsserver.mapper;
 
-import dto.EndpointHitDto;
+import ru.practicum.dto.EndpointHitDto;
 import lombok.experimental.UtilityClass;
 import ru.practicum.statsserver.model.EndpointHit;
 @UtilityClass
