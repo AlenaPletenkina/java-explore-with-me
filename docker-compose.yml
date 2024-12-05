@@ -23,7 +23,7 @@ services:
       - POSTGRES_PASSWORD=stats
 
   ewm-service:
-    build: main-service
+    build: ewm-service
     container_name: ewm-service-container
     ports:
       - "8080:8080"
