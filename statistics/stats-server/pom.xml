@@ -13,7 +13,6 @@
     <name>stats-server</name>
     <description>stats-server</description>
     <packaging>jar</packaging>
-
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -37,7 +36,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -62,10 +60,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <mainClass>ru.practicum.statsserver.StatsServerApplication</mainClass>
-                    <layout>JAR</layout>
-                </configuration>
             </plugin>
         </plugins>
     </build>
