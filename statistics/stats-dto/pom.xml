@@ -11,7 +11,6 @@
     <packaging>jar</packaging>
 
     <name>stats-dto</name>
-    <url>http://maven.apache.org</url>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
