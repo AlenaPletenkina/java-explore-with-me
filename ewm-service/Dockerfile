@@ -1,3 +1,4 @@
 FROM eclipse-temurin:21-jre-jammy
-COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar /app.jar"]
+WORKDIR /app
+COPY target/*.jar ewm-service.jar
+ENTRYPOINT ["java","-jar","/app/ewm-service.jar"]
