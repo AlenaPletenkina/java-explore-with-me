@@ -41,9 +41,9 @@ public class StatsServiceImpl implements StatsService {
     }
 
 
-    private List<ViewStatsDto> convertToViewStatsDto(List<Map<String,Object>> result){
+    private List<ViewStatsDto> convertToViewStatsDto(List<Map<String, Object>> result) {
         return result.stream()
-                .map(map->new ViewStatsDto((String) map.get("app"), (String) map.get("uri"), (Integer) map.get("hits")))
+                .map(map -> new ViewStatsDto((String) map.get("app"), (String) map.get("uri"), (Integer) map.get("hits")))
                 .collect(Collectors.toList());
     }
 
