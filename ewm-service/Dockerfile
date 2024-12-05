@@ -1,3 +1,3 @@
 FROM eclipse-temurin:21-jre-jammy
-COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar /app.jar"]
+COPY /*.jar app.jar
+ENTRYPOINT ["sh", "-c", "java -jar /app.jar"]
