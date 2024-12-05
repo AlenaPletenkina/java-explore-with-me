@@ -1,6 +1,8 @@
 services:
   stats-server:
-    build: statistics/stats-server
+    build:
+      context: /statistics/stats-server
+      dockerfile: Dockerfile
     container_name: stats-server-container
     ports:
       - "9090:9090"
@@ -23,7 +25,9 @@ services:
       - POSTGRES_PASSWORD=e0gD0os9
 
   ewm-service:
-    build: ewm-service
+    build:
+      context: /ewm-service
+      dockerfile: Dockerfile
     container_name: ewm-service-container
     ports:
     - "8080:8080"
