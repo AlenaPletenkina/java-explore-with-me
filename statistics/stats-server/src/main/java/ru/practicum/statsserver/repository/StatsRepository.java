@@ -19,7 +19,7 @@ public interface StatsRepository extends JpaRepository<EndpointHit, Integer> {
             "GROUP BY hit.app, hit.uri " +
             "ORDER BY (CASE :unique " +
             "WHEN true THEN COUNT(DISTINCT hit.ip)" +
-            "ELSE COUNT(hit.ip) END)")
+            "ELSE COUNT(hit.ip) END) DESC")
     List<Map<String, Object>> findAllElements(LocalDateTime start, LocalDateTime end, Boolean unique);
 
     @Query("SELECT new map(hit.app as app,hit.uri as uri, (CASE :unique " +
@@ -30,6 +30,6 @@ public interface StatsRepository extends JpaRepository<EndpointHit, Integer> {
             "GROUP BY hit.app, hit.uri " +
             "ORDER BY (CASE :unique " +
             "WHEN true THEN COUNT(DISTINCT hit.ip)" +
-            "ELSE COUNT(hit.ip) END)")
+            "ELSE COUNT(hit.ip) END) DESC")
     List<Map<String, Object>> findAllElements(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique);
 }
