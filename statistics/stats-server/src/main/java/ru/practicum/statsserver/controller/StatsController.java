@@ -16,7 +16,6 @@ import java.util.List;
 public class StatsController {
     private final StatsService statsService;
 
-
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/hit")
     public String saveEvent(@RequestBody EndpointHitDto event) {

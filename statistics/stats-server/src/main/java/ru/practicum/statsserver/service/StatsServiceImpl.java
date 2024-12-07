@@ -1,6 +1,8 @@
 package ru.practicum.statsserver.service;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.dto.EndpointHitDto;
@@ -18,9 +20,11 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 @Slf4j
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class StatsServiceImpl implements StatsService {
-    private final StatsRepository statsRepository;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    final StatsRepository statsRepository;
+    static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
 
 
     @Override
@@ -40,11 +44,9 @@ public class StatsServiceImpl implements StatsService {
         return convertToViewStatsDto(statsRepository.findAllElements(parsedStart, parsedEnd, uris, unique));
     }
 
-
     private List<ViewStatsDto> convertToViewStatsDto(List<Map<String, Object>> result) {
         return result.stream()
                 .map(map -> new ViewStatsDto((String) map.get("app"), (String) map.get("uri"), (Long) map.get("hits")))
                 .collect(Collectors.toList());
     }
-
 }

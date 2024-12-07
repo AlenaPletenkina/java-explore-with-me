@@ -1,6 +1,8 @@
 package ru.practicum.client;
 
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
@@ -15,11 +17,12 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class BaseClient {
-    private final RestTemplate restTemplate;
-
-    private final String serverUrl = "http://stats-server:9090";
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    final RestTemplate restTemplate;
+    final String serverUrl = "http://stats-server:9090";
+    static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
 
     public EndpointHitDto postHit(EndpointHitDto hit) {
         HttpEntity<EndpointHitDto> requestEntity = new HttpEntity<>(hit);

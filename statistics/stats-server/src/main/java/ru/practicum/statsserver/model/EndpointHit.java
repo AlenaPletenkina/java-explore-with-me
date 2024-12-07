@@ -1,10 +1,8 @@
 package ru.practicum.statsserver.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
@@ -14,16 +12,17 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "statistics")
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class EndpointHit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
     @Column(nullable = false)
-    private String app;
+    String app;
     @Column(nullable = false)
-    private String uri;
+    String uri;
     @Column(nullable = false)
-    private String ip;
+    String ip;
     @Column(nullable = false, name = "creation date")
-    private LocalDateTime timestamp;
+    LocalDateTime timestamp;
 }
