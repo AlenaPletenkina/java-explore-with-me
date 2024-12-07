@@ -34,7 +34,7 @@ public class StatsServiceImpl implements StatsService {
     public List<ViewStatsDto> getStatistics(String start, String end, List<String> uris, Boolean unique) {
         LocalDateTime parsedStart = LocalDateTime.parse(start, formatter);
         LocalDateTime parsedEnd = LocalDateTime.parse(end, formatter);
-        if (uris != null && uris.isEmpty()) {
+        if (uris != null) {
             return convertToViewStatsDto(statsRepository.findAllElements(parsedStart, parsedEnd, unique));
         }
         return convertToViewStatsDto(statsRepository.findAllElements(parsedStart, parsedEnd, uris, unique));

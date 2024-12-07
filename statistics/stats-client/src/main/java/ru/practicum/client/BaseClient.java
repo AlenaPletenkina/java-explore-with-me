@@ -19,8 +19,7 @@ import java.util.Map;
 public class BaseClient {
     private final RestTemplate restTemplate;
 
-    @Value("${stats-server.url}")
-    private final String serverUrl;
+    private final String serverUrl = "http://stats-server:9090";
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public EndpointHitDto postHit(EndpointHitDto hit) {
