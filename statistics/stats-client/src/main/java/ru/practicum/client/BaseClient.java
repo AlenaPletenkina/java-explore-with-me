@@ -19,8 +19,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BaseClient {
-    final RestTemplate restTemplate;
-    final String serverUrl = "http://stats-server:9090";
+    final RestTemplate restTemplate = new RestTemplate();
+    final String serverUrl = "http://localhost:9090";
     static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
 
