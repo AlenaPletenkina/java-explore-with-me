@@ -3,8 +3,12 @@ package ru.practicum.ewmservice.event.mapper;
 import ru.practicum.ewmservice.category.mapper.CategoryMapper;
 import ru.practicum.ewmservice.event.dto.*;
 import ru.practicum.ewmservice.event.model.Event;
+import ru.practicum.ewmservice.request.model.Request;
 import ru.practicum.ewmservice.user.mapper.UserMapper;
 
+import java.util.List;
+
+import static java.util.Objects.isNull;
 import static ru.practicum.ewmservice.request.dto.RequestStatus.CONFIRMED;
 
 public class EventMapper {
@@ -25,6 +29,8 @@ public class EventMapper {
     }
 
     public static EventFullDto toEventFullDto(Event event) {
+        List<Request> requests = event.getRequests();
+
         return EventFullDto.builder()
                 .id(event.getId())
                 .description(event.getDescription())
@@ -41,7 +47,7 @@ public class EventMapper {
                 .category(CategoryMapper.categoryDto(event.getCategory()))
                 .requestModeration(event.getRequestModeration())
                 .annotation(event.getAnnotation())
-                .confirmedRequests(event.getRequests().stream()
+                .confirmedRequests(isNull(requests) ? 0 : requests.stream()
                         .filter(request -> CONFIRMED.equals(request.getStatus()))
                         .count())
                 .build();
@@ -54,6 +60,7 @@ public class EventMapper {
                 .eventDate(newEventDto.getEventDate())
                 .title(newEventDto.getTitle())
                 .paid(newEventDto.getPaid())
+                .state(State.PENDING)
                 .participantLimit(newEventDto.getParticipantLimit())
                 .requestModeration(newEventDto.getRequestModeration())
                 .lon(newEventDto.getLocation().getLon())

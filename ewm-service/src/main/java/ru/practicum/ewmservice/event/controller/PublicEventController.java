@@ -1,6 +1,8 @@
 package ru.practicum.ewmservice.event.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewmservice.event.dto.EventFullDto;
@@ -22,15 +24,15 @@ public class PublicEventController {
 
     @GetMapping
     public List<EventShortDto> getPublicEvents(HttpServletRequest httpRequest,
-                                               @RequestParam String text,
-                                               @RequestParam List<Integer> categories,
-                                               @RequestParam Boolean paid,
-                                               @RequestParam String rangeStart,
-                                               @RequestParam String rangeEnd,
+                                               @RequestParam(defaultValue = "") String text,
+                                               @RequestParam(required = false) List<Integer> categories,
+                                               @RequestParam(required = false) Boolean paid,
+                                               @RequestParam(required = false) String rangeStart,
+                                               @RequestParam(required = false) String rangeEnd,
                                                @RequestParam(defaultValue = "false") Boolean onlyAvailable,
-                                               @RequestParam Sort sort,
-                                               @RequestParam(defaultValue = "0") Integer from,
-                                               @RequestParam(defaultValue = "10") Integer size) {
+                                               @RequestParam(required = false) Sort sort,
+                                               @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+                                               @RequestParam(defaultValue = "10") @Positive Integer size) {
         log.info("Получил запрос на получение публичных событий.");
         return eventService.getPublicEvents(httpRequest, text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
     }

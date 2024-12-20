@@ -1,5 +1,6 @@
 package ru.practicum.ewmservice.request.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewmservice.request.dto.ParticipationRequestDto;
 import ru.practicum.ewmservice.request.service.RequestService;
@@ -20,6 +21,7 @@ public class PrivateRequestController {
         return requestService.getUserRequests(userId);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{userId}/requests")
     public ParticipationRequestDto createRequest(@PathVariable Integer userId,
                                                  @RequestParam Integer eventId) {

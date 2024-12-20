@@ -6,5 +6,6 @@ import ru.practicum.ewmservice.category.model.Category;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category,Integer> {
+    Boolean existsByNameIgnoreCase(String name);
 
 }

@@ -27,9 +27,9 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
             "AND (:paid IS NULL OR event.paid IN :paid) " +
             "AND (:rangeStart IS NULL OR event.eventDate >= :rangeStart) " +
             "AND (:rangeEnd IS NULL OR event.eventDate <= :rangeEnd) " +
-            "ORDER BY CASE WHEN :sort = 'VIEWS' THEN event.views ELSE event.eventDate END")
+            "ORDER BY  event.eventDate ")
     List<Event> getPublicEventsWithFilter(String text, List<Integer> categories, Boolean paid, String rangeStart,
-                                          String rangeEnd, String sort);
+                                          String rangeEnd);
 
 
 }

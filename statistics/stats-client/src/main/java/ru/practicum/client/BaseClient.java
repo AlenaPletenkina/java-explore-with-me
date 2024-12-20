@@ -24,9 +24,9 @@ public class BaseClient {
     static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
 
-    public EndpointHitDto postHit(EndpointHitDto hit) {
+    public String postHit(EndpointHitDto hit) {
         HttpEntity<EndpointHitDto> requestEntity = new HttpEntity<>(hit);
-        return restTemplate.exchange(serverUrl + "/hit", HttpMethod.POST, requestEntity, EndpointHitDto.class).getBody();
+        return restTemplate.exchange(serverUrl + "/hit", HttpMethod.POST, requestEntity, String.class).getBody();
     }
 
     public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> urisList, Boolean unique) {

@@ -1,6 +1,9 @@
 package ru.practicum.ewmservice.event.service;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.client.BaseClient;
@@ -22,6 +25,7 @@ import ru.practicum.ewmservice.user.repository.UserRepository;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -32,19 +36,14 @@ import static ru.practicum.ewmservice.event.dto.StateAction.SEND_TO_REVIEW;
 import static ru.practicum.ewmservice.request.dto.RequestStatus.CONFIRMED;
 
 @Service
+@ComponentScan(basePackages = {"ru.practicum.client"})  // для Idea
+@RequiredArgsConstructor
+@Slf4j
 public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final BaseClient baseClient;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
-
-    public EventServiceImpl(EventRepository eventRepository, BaseClient baseClient, UserRepository userRepository,
-                            CategoryRepository categoryRepository) {
-        this.eventRepository = eventRepository;
-        this.baseClient = baseClient;
-        this.userRepository = userRepository;
-        this.categoryRepository = categoryRepository;
-    }
 
     @Override
     public List<EventFullDto> getAllEvents(List<Integer> users, List<String> states, List<Integer> categories,
@@ -73,7 +72,7 @@ public class EventServiceImpl implements EventService {
             rangeStart = String.valueOf(LocalDateTime.now());
         }
         List<Event> events = eventRepository.getPublicEventsWithFilter(text.toLowerCase(), categories, paid, rangeStart,
-                rangeEnd, sort.name());
+                rangeEnd);
         sendStatistic(httpRequest);
         return events.stream()
                 .filter(event -> {
@@ -136,10 +135,13 @@ public class EventServiceImpl implements EventService {
     public EventFullDto updateUsersEvent(Integer userId, Integer eventId, UpdateEventUserRequest eventRequest) {
         userRepository.findById(userId).orElseThrow();
         Event event = eventRepository.findById(eventId).orElseThrow();
-        if (!event.getState().equals(PUBLISHED) && checkDateTime(eventRequest.getEventDate())) {
+        if (!event.getState().equals(PUBLISHED)) {
             handleRequestData(eventRequest, event);
+        } else{
+            log.error("Запрос не соответствует бизнес требованиям : {}, событие :{}", eventRequest, event);
+            throw new BadRequestDataException("Запрос не соответствует бизнес требованиям ");
         }
-        throw new BadRequestDataException("Запрос не соответствует бизнес требованиям ");
+        return EventMapper.toEventFullDto(event);
     }
 
     @Override
@@ -161,13 +163,17 @@ public class EventServiceImpl implements EventService {
         List<Request> requests = event.getRequests().stream()
                 .filter(element -> request.getRequestIds().contains(element.getId()))
                 .toList();
+        List<Request> requests1 = event.getRequests();
+        log.error("реквесты {}", requests1);
         boolean isPending = requests.stream()
                 .allMatch(element -> element.getStatus().equals(RequestStatus.PENDING));
         if (isPending) {
+            log.error("В выборке не должно быть запросов кроме статуса PENDING , request : {}", requests);
             throw new BadRequestDataException("В выборке не должно быть запросов кроме статуса PENDING");
         }
         Integer participantLimit = event.getParticipantLimit();
         if (participantLimit == 0 || !event.getRequestModeration()) {
+            log.error("Данное событие не требует подтверждения");
             throw new BadRequestDataException("Данное событие не требует подтверждения");
         }
         long countConfirmed = event.getRequests().stream()
@@ -194,6 +200,7 @@ public class EventServiceImpl implements EventService {
                                 .toList())
                         .build();
             }
+            log.error("Превышен лимит подтвержденных запросов");
             throw new BadRequestDataException("Превышен лимит подтвержденных запросов");
         } else if (request.getStatus().equals(RequestStatus.REJECTED)) {
             requests.forEach((element -> element.setStatus(RequestStatus.REJECTED)));
@@ -209,6 +216,7 @@ public class EventServiceImpl implements EventService {
                             .toList())
                     .build();
         }
+        log.error("Ошибка в статусе запроса");
         throw new BadRequestDataException("Ошибка в статусе запроса");
     }
 
@@ -230,7 +238,11 @@ public class EventServiceImpl implements EventService {
             event.setDescription(request.getDescription());
         }
         if (!isNull(request.getEventDate())) {
-            event.setEventDate(request.getEventDate());
+            if (checkDateTime(request.getEventDate())) {
+                event.setEventDate(request.getEventDate());
+            }
+            log.error("Неверно указано время события {}", request.getEventDate());
+            throw new BadRequestDataException("Неверно указано время события");
         }
         if (!isNull(request.getLocation())) {
             event.setLat(request.getLocation().getLat());
@@ -293,8 +305,7 @@ public class EventServiceImpl implements EventService {
                 .app("ewm-service")
                 .uri(httpRequest.getRequestURI())
                 .ip(httpRequest.getLocalAddr())
+                .timestamp(LocalDateTime.now())
                 .build());
     }
-
-
 }

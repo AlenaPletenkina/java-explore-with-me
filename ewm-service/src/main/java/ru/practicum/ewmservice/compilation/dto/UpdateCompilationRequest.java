@@ -1,5 +1,6 @@
 package ru.practicum.ewmservice.compilation.dto;
 
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,5 +16,6 @@ public class UpdateCompilationRequest {
     private Integer id;
     private Set<Integer> events;
     private Boolean pinned;
+    @Size(max = 50)
     private String title;
 }

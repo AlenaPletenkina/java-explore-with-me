@@ -21,10 +21,13 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(name = "annotation", nullable = false, length = 2000)
     private String annotation;
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "category_id")
     private Category category;
     private String createdOn;
+    @Column(name = "description", length = 7000)
     private String description;
     private String eventDate;
     @ManyToOne(cascade = CascadeType.ALL)
@@ -32,14 +35,17 @@ public class Event {
     private User initiator;
     private float lon;
     private float lat;
+    @Column(name = "paid")
     private Boolean paid;
+    @Column(name = "participant_limit")
     private Integer participantLimit;
     private String publishedOn;
+    @Column(name = "request_moderation")
     private Boolean requestModeration;
     @Enumerated(EnumType.STRING)
-    private State state;
+    private State state = State.PENDING;
     private String title;
     private Integer views;
-    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Request> requests;
 }

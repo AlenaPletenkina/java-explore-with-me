@@ -3,6 +3,7 @@ package ru.practicum.statsserver.model;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -23,6 +24,7 @@ public class EndpointHit {
     String uri;
     @Column(nullable = false)
     String ip;
+    @CreationTimestamp
     @Column(nullable = false, name = "creation date")
     LocalDateTime timestamp;
 }

@@ -21,7 +21,6 @@ public class StatsMapper {
                 .app(hit.getApp())
                 .id(hit.getId())
                 .ip(hit.getIp())
-                .timestamp(hit.getTimestamp())
                 .uri(hit.getUri())
                 .build();
     }

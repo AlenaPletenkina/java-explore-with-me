@@ -1,6 +1,11 @@
 package ru.practicum.ewmservice.event.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewmservice.event.dto.*;
 import ru.practicum.ewmservice.event.service.EventService;
@@ -19,15 +24,16 @@ public class PrivateEventController {
     }
 
     @GetMapping("/{userId}/events")
-    public List<EventShortDto> getUsersEvents(@PathVariable Integer userId,
-                                              @RequestParam Integer from,
-                                              @RequestParam Integer size) {
+    public List<EventShortDto> getUsersEvents(@PathVariable @Min(1) Integer userId,
+                                              @RequestParam @PositiveOrZero Integer from,
+                                              @RequestParam @Positive Integer size) {
         return eventService.getUsersEvents(userId, from, size);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{userId}/events")
     public EventFullDto createEvent(@PathVariable Integer userId,
-                                    @RequestBody NewEventDto event) {
+                                    @RequestBody @Valid NewEventDto event) {
         return eventService.createEvent(userId, event);
     }
 
@@ -40,7 +46,8 @@ public class PrivateEventController {
     @PatchMapping("/{userId}/events/{eventId}")
     public EventFullDto updateEvent(@PathVariable Integer userId,
                                     @PathVariable Integer eventId,
-                                    @RequestBody UpdateEventUserRequest event) {
+                                    @RequestBody @Valid UpdateEventUserRequest event) {
+        log.info("Получил запрос на обновление события. userId: {}, eventId: {}, event: {}.", userId, eventId, event);
         return eventService.updateUsersEvent(userId, eventId, event);
     }
 
@@ -53,7 +60,8 @@ public class PrivateEventController {
     @PatchMapping("/{userId}/events/{eventId}/requests")
     public EventRequestStatusUpdateResult changeRequestStatus(@PathVariable Integer userId,
                                                               @PathVariable Integer eventId,
-                                                              @RequestBody EventRequestStatusUpdateRequest request) {
-        return eventService.changeRequestStatus(userId,eventId,request);
+                                                              @RequestBody @Valid EventRequestStatusUpdateRequest request) {
+        log.info("Получил запрос на обновление статуса заявки userId: {}, eventId: {}, request: {} ", userId, eventId, request);
+        return eventService.changeRequestStatus(userId, eventId, request);
     }
 }
