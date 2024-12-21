@@ -22,11 +22,6 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     @Override
     public CategoryDto createCategory(NewCategoryDto newCategoryDto) {
-       // boolean exists = categoryRepository.existsByNameIgnoreCase(newCategoryDto.getName());
-      //  if (!exists) {
-           // throw new CategoryNotFoundException();
-       // }
-
         Category category = categoryRepository.save(Category.builder()
                 .name(newCategoryDto.getName())
                 .build());
@@ -36,18 +31,14 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     @Override
     public void deleteCategory(Integer catId) {
-        Category category = categoryRepository.findById(catId).orElseThrow();//&&&&
-        boolean exists = categoryRepository.existsById(catId);
-        if (!exists) {
-            throw new CategoryNotFoundException();
-        }
+        categoryRepository.findById(catId).orElseThrow(CategoryNotFoundException::new);
         categoryRepository.deleteById(catId);
     }
 
     @Transactional
     @Override
     public CategoryDto updateCategory(CategoryDto categoryDto, Integer catId) {
-        Category category = categoryRepository.findById(catId).orElseThrow();
+        Category category = categoryRepository.findById(catId).orElseThrow(CategoryNotFoundException::new);
         category.setName(categoryDto.getName());
         categoryDto.setId(category.getId());
         return categoryDto;

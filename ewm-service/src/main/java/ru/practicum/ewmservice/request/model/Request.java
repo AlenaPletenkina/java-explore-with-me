@@ -8,7 +8,6 @@ import ru.practicum.ewmservice.request.dto.RequestStatus;
 import ru.practicum.ewmservice.user.model.User;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -16,6 +15,7 @@ import java.time.LocalDateTime;
 @Entity(name = "requests")
 @Builder
 @ToString
+@Table(indexes = {@Index(name = "multi_index",columnList = "requester_id,event_id",unique = true)})
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +28,7 @@ public class Request {
     private RequestStatus status;
     @CreationTimestamp
     private Instant created;
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "event_id")
     private Event event;
 

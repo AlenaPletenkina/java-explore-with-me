@@ -20,6 +20,7 @@ import ru.practicum.ewmservice.request.dto.ParticipationRequestDto;
 import ru.practicum.ewmservice.request.dto.RequestStatus;
 import ru.practicum.ewmservice.request.mapper.RequestMapper;
 import ru.practicum.ewmservice.request.model.Request;
+import ru.practicum.ewmservice.request.repository.RequestRepository;
 import ru.practicum.ewmservice.user.model.User;
 import ru.practicum.ewmservice.user.repository.UserRepository;
 
@@ -44,6 +45,7 @@ public class EventServiceImpl implements EventService {
     private final BaseClient baseClient;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final RequestRepository requestRepository;
 
     @Override
     public List<EventFullDto> getAllEvents(List<Integer> users, List<String> states, List<Integer> categories,
@@ -137,7 +139,7 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findById(eventId).orElseThrow();
         if (!event.getState().equals(PUBLISHED)) {
             handleRequestData(eventRequest, event);
-        } else{
+        } else {
             log.error("Запрос не соответствует бизнес требованиям : {}, событие :{}", eventRequest, event);
             throw new BadRequestDataException("Запрос не соответствует бизнес требованиям ");
         }
@@ -160,14 +162,15 @@ public class EventServiceImpl implements EventService {
                                                               EventRequestStatusUpdateRequest request) {
         userRepository.findById(userId).orElseThrow();
         Event event = eventRepository.findById(eventId).orElseThrow();
+        //List<Request> requests = requestRepository.findAllById(request.getRequestIds());
         List<Request> requests = event.getRequests().stream()
                 .filter(element -> request.getRequestIds().contains(element.getId()))
                 .toList();
         List<Request> requests1 = event.getRequests();
-        log.error("реквесты {}", requests1);
+        log.error(" {}", requests1);
         boolean isPending = requests.stream()
                 .allMatch(element -> element.getStatus().equals(RequestStatus.PENDING));
-        if (isPending) {
+        if (!isPending) {
             log.error("В выборке не должно быть запросов кроме статуса PENDING , request : {}", requests);
             throw new BadRequestDataException("В выборке не должно быть запросов кроме статуса PENDING");
         }
@@ -295,8 +298,11 @@ public class EventServiceImpl implements EventService {
         if (!isNull(request.getParticipantLimit())) {
             event.setParticipantLimit(request.getParticipantLimit());
         }
-        if (!isNull(request.getStateAction())) {
-            event.setState(request.getStateAction().equals(PUBLISH_EVENT) ? PUBLISHED : CANCELED);
+        if (!isNull(request.getStateAction()) ) {
+            if(event.getState().equals(PENDING)){
+                event.setState(request.getStateAction().equals(PUBLISH_EVENT) ? PUBLISHED : CANCELED);
+            }
+            throw new BadRequestDataException("Событие уже опубликовано");
         }
     }
 
