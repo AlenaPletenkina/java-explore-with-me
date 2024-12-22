@@ -7,7 +7,7 @@ import ru.practicum.ewmservice.compilation.dto.UpdateCompilationRequest;
 import java.util.List;
 
 public interface CompilationService {
-    List<CompilationDto> getAllEvents(boolean pinned, Integer from, Integer size);
+    List<CompilationDto> getAllEvents(Boolean pinned, Integer from, Integer size);
 
     CompilationDto getCompilationById(Integer compId);
 

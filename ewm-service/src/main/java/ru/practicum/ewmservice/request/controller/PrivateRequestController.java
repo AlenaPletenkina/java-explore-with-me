@@ -19,7 +19,7 @@ public class PrivateRequestController {
     }
 
     @GetMapping("/{userId}/requests")
-    public List<ParticipationRequestDto> getUserRequests(@PathVariable Integer userId){
+    public List<ParticipationRequestDto> getUserRequests(@PathVariable Integer userId) {
         return requestService.getUserRequests(userId);
     }
 
@@ -27,13 +27,13 @@ public class PrivateRequestController {
     @PostMapping("/{userId}/requests")
     public ParticipationRequestDto createRequest(@PathVariable Integer userId,
                                                  @RequestParam Integer eventId) {
-        log.info("Поступил запрос на участии в событии userId:{},eventId:{}",userId,eventId);
-        return requestService.createRequest(userId,eventId);
+        log.info("Поступил запрос на участии в событии userId:{},eventId:{}", userId, eventId);
+        return requestService.createRequest(userId, eventId);
     }
 
     @PatchMapping("/{userId}/requests/{requestId}/cancel")
     public ParticipationRequestDto cancelRequest(@PathVariable Integer userId,
                                                  @PathVariable Integer requestId) {
-        return requestService.cancelRequest(userId,requestId);
+        return requestService.cancelRequest(userId, requestId);
     }
 }

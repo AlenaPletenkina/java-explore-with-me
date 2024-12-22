@@ -46,7 +46,7 @@ public class Event {
     private State state = State.PENDING;
     private String title;
     private Integer views;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event" , fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event", fetch = FetchType.EAGER)
     //@JoinColumn(name = "request_id")
     private List<Request> requests;
 }

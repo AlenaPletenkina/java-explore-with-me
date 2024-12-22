@@ -24,23 +24,25 @@ public class PublicEventController {
 
     @GetMapping
     public List<EventShortDto> getPublicEvents(HttpServletRequest httpRequest,
-                                               @RequestParam(defaultValue = "") String text,
+                                               @RequestParam(required = false) String text,
                                                @RequestParam(required = false) List<Integer> categories,
                                                @RequestParam(required = false) Boolean paid,
                                                @RequestParam(required = false) String rangeStart,
                                                @RequestParam(required = false) String rangeEnd,
                                                @RequestParam(defaultValue = "false") Boolean onlyAvailable,
                                                @RequestParam(required = false) Sort sort,
-                                               @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
-                                               @RequestParam(defaultValue = "10") @Positive Integer size) {
+                                               @RequestParam(defaultValue = "0")  Integer from,
+                                               @RequestParam(defaultValue = "10") Integer size) {
         log.info("Получил запрос на получение публичных событий.");
         return eventService.getPublicEvents(httpRequest, text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
     }
 
     @GetMapping("/{id}")
     public EventFullDto getEventById(@PathVariable Integer id, HttpServletRequest httpRequest) {
-        log.info("Получил запрос на получение события по его id.");
-        return eventService.getEventById(id, httpRequest);
+        log.info("Получил запрос на получение события по его id : {}", id);
+        EventFullDto eventById = eventService.getEventById(id, httpRequest);
+        log.info("Получил событие : {}", eventById);
+        return eventById;
     }
 
 }

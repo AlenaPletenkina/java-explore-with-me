@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.NoSuchElementException;
+
 @RestControllerAdvice
 @Slf4j
 public class ErrorHandler {
@@ -35,16 +37,28 @@ public class ErrorHandler {
                 .build();
     }
 
-//    @ExceptionHandler
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public ApiError handlerIncorrectParametersException(ParametersException e) {
-//        log.debug("Получен статус 400 Bad request {}", e.getMessage(), e);
-//        return ApiError.builder()
-//                .status(HttpStatus.BAD_REQUEST.toString())
-//                .message(e.getMessage())
-//                .reason("Incorrect parameters")
-//                .build();
-//    }
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handlerEmailConflictException(final BadDataException e) {
+        log.debug("Получен статус 409 CONFLICT {}", e.getMessage(), e);
+
+        return ApiError.builder()
+                .status(HttpStatus.BAD_REQUEST.toString())
+                .message(e.getMessage())
+                .reason("Integrity constraint has been violated.")
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiError handlerIncorrectParametersException(NoSuchElementException e) {
+        log.debug("Получен статус 404 NOT FOUND {}", e.getMessage(), e);
+        return ApiError.builder()
+                .status(HttpStatus.NOT_FOUND.toString())
+                .message(e.getMessage())
+                .reason("Incorrect parameters")
+                .build();
+    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)

@@ -65,6 +65,7 @@ public class EventMapper {
                 .requestModeration(newEventDto.getRequestModeration())
                 .lon(newEventDto.getLocation().getLon())
                 .lat(newEventDto.getLocation().getLat())
+                .views(0)
                 .build();
     }
 }

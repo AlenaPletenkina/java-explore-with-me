@@ -45,7 +45,7 @@ public class RequestServiceImpl implements RequestService {
         Request request = Request.builder()
                 .user(user)
                 .event(event)
-                .status(RequestStatus.PENDING)
+                .status(event.getParticipantLimit() == 0 ? RequestStatus.CONFIRMED : RequestStatus.PENDING)
                 .build();
         Request result = requestRepository.save(request);
         return RequestMapper.toParticipationRequestDto(result);

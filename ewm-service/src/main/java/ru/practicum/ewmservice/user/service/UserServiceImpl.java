@@ -11,6 +11,8 @@ import ru.practicum.ewmservice.user.repository.UserRepository;
 
 import java.util.List;
 
+import static java.util.Objects.isNull;
+
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
@@ -21,13 +23,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getAllUsers(List<Integer> ids, Integer from, Integer size) {
-        List<User> users = userRepository.findAllById(ids);
-       return users.stream()
+        if (isNull(ids)) {
+            return userRepository.findAll().stream()
+                    .skip(from)
+                    .limit(size)
+                    .map(UserMapper::toUserDto)
+                    .toList();
+        }
+        return userRepository.findAllById(ids).stream()
                 .skip(from)
                 .limit(size)
                 .map(UserMapper::toUserDto)
                 .toList();
     }
+
     @Transactional
     @Override
     public UserDto createUser(NewUserRequest userRequest) {

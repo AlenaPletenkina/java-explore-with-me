@@ -24,9 +24,9 @@ public class AdminUserController {
 
     @GetMapping
     public List<UserDto> getAllUsers(@RequestParam(required = false) List<Integer> ids,
-                                     @RequestParam(required = false,defaultValue = "0") @PositiveOrZero Integer from,
-                                     @RequestParam(required = false,defaultValue = "10") @Positive Integer size){
-        return  userService.getAllUsers(ids,from,size);
+                                     @RequestParam(required = false, defaultValue = "0") @PositiveOrZero Integer from,
+                                     @RequestParam(required = false, defaultValue = "10") @Positive Integer size) {
+        return userService.getAllUsers(ids, from, size);
     }
 
     @PostMapping
@@ -37,7 +37,7 @@ public class AdminUserController {
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser (@PathVariable Integer userId){
+    public void deleteUser(@PathVariable Integer userId) {
         userService.deleteUser(userId);
     }
 }

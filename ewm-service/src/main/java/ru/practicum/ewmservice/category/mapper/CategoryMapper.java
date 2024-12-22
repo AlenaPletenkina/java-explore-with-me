@@ -6,7 +6,7 @@ import ru.practicum.ewmservice.category.model.Category;
 
 @UtilityClass
 public class CategoryMapper {
-    public static CategoryDto categoryDto(Category category){
+    public static CategoryDto categoryDto(Category category) {
         return CategoryDto.builder()
                 .id(category.getId())
                 .name(category.getName())

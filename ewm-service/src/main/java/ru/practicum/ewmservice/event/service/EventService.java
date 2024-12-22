@@ -1,11 +1,9 @@
 package ru.practicum.ewmservice.event.service;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.stereotype.Service;
 import ru.practicum.ewmservice.event.dto.*;
 import ru.practicum.ewmservice.request.dto.ParticipationRequestDto;
 
-import java.net.http.HttpRequest;
 import java.util.List;
 
 public interface EventService {
@@ -15,7 +13,7 @@ public interface EventService {
 
     EventFullDto updateEvent(Integer eventId, UpdateEventAdminRequest updateEventAdminRequest);
 
-    List<EventShortDto> getPublicEvents(HttpServletRequest httpRequest,String text, List<Integer> categories, Boolean paid, String rangeStart,
+    List<EventShortDto> getPublicEvents(HttpServletRequest httpRequest, String text, List<Integer> categories, Boolean paid, String rangeStart,
                                         String rangeEnd, Boolean onlyAvailable, Sort sort, Integer from, Integer size);
 
     EventFullDto getEventById(Integer id, HttpServletRequest httpRequest);

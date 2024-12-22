@@ -14,6 +14,8 @@ import ru.practicum.ewmservice.exception.CompilationNotFoundException;
 
 import java.util.List;
 
+import static java.util.Objects.isNull;
+
 @Service
 public class CompilationServiceImpl implements CompilationService {
     private final CompilationRepository compilationRepository;
@@ -25,9 +27,9 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public List<CompilationDto> getAllEvents(boolean pinned, Integer from, Integer size) {
+    public List<CompilationDto> getAllEvents(Boolean pinned, Integer from, Integer size) {
         return compilationRepository.findAll().stream()
-                .filter(compilation -> compilation.getPinned() == pinned)
+                .filter(compilation -> isNull(pinned) || compilation.getPinned() == pinned)
                 .skip(from)
                 .limit(size)
                 .map(CompilationMapper::toCompilationDto)
@@ -44,8 +46,10 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public CompilationDto createCompilation(NewCompilationDto compilationDto) {
         Compilation compilation = CompilationMapper.toCompilation(compilationDto);
-        List<Event> events = eventRepository.findAllById(compilationDto.getEvents());
-        compilation.setEvents(events);
+        if (!isNull(compilationDto.getEvents())) {
+            List<Event> events = eventRepository.findAllById(compilationDto.getEvents());
+            compilation.setEvents(events);
+        }
         Compilation result = compilationRepository.save(compilation);
         return CompilationMapper.toCompilationDto(result);
     }
@@ -64,7 +68,9 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public CompilationDto updateCompilation(UpdateCompilationRequest updateCompilationRequest, Integer compId) {
         Compilation compilation = compilationRepository.findById(compId).orElseThrow();
-        compilation.setEvents(eventRepository.findAllById(updateCompilationRequest.getEvents()));
+        if (!isNull(updateCompilationRequest.getEvents())) {
+            compilation.setEvents(eventRepository.findAllById(updateCompilationRequest.getEvents()));
+        }
         compilation.setPinned(updateCompilationRequest.getPinned());
         compilation.setTitle(updateCompilationRequest.getTitle());
         return CompilationMapper.toCompilationDto(compilation);
