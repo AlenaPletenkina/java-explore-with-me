@@ -61,7 +61,7 @@ public class EventMapper {
                 .title(newEventDto.getTitle())
                 .paid(!isNull(newEventDto.getPaid()) && newEventDto.getPaid())
                 .state(State.PENDING)
-                .participantLimit(isNull(newEventDto.getParticipantLimit()) ? 0 : newEventDto.getParticipantLimit() )
+                .participantLimit(isNull(newEventDto.getParticipantLimit()) ? 0 : newEventDto.getParticipantLimit())
                 .requestModeration(newEventDto.getRequestModeration())
                 .lon(newEventDto.getLocation().getLon())
                 .lat(newEventDto.getLocation().getLat())
