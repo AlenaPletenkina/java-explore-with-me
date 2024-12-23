@@ -1,7 +1,5 @@
 package ru.practicum.ewmservice.compilation.controller;
 
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/compilations")
 @Slf4j
+
 public class PublicCompilationController {
     private final CompilationService compilationService;
 
@@ -23,8 +22,8 @@ public class PublicCompilationController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<CompilationDto> getAllEvents(@RequestParam(required = false) boolean pinned,
-                                             @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
-                                             @RequestParam(defaultValue = "10") @Positive Integer size) {
+                                             @RequestParam(required = false, defaultValue = "0") Integer from,
+                                             @RequestParam(required = false, defaultValue = "10") Integer size) {
         log.info("Получил запрос на получение списка всех событий.");
         return compilationService.getAllEvents(pinned, from, size);
     }
@@ -32,7 +31,7 @@ public class PublicCompilationController {
     @GetMapping("/{compId}")
     public CompilationDto getCompilationById(@PathVariable Integer compId) {
         log.info("Получил запрос на получение списка событий по его id.");
-       return compilationService.getCompilationById(compId);
+        return compilationService.getCompilationById(compId);
     }
 
 

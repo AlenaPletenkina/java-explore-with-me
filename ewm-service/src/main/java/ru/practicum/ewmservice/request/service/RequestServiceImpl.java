@@ -1,8 +1,11 @@
 package ru.practicum.ewmservice.request.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.ewmservice.event.dto.State;
 import ru.practicum.ewmservice.event.repository.EventRepository;
+import ru.practicum.ewmservice.exception.BadRequestDataException;
 import ru.practicum.ewmservice.exception.UserNotFoundException;
 import ru.practicum.ewmservice.request.dto.ParticipationRequestDto;
 import ru.practicum.ewmservice.event.model.Event;
@@ -16,6 +19,7 @@ import ru.practicum.ewmservice.user.repository.UserRepository;
 import java.util.List;
 
 @Service
+@Slf4j
 public class RequestServiceImpl implements RequestService {
     private final UserRepository userRepository;
     private final RequestRepository requestRepository;
@@ -42,11 +46,24 @@ public class RequestServiceImpl implements RequestService {
     public ParticipationRequestDto createRequest(Integer userId, Integer eventId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Event event = eventRepository.findById(eventId).orElseThrow();
+        long count = event.getRequests().size();
+
+        //if (count >= event.getParticipantLimit() ) {
+           // throw new BadRequestDataException("На мероприятие с ID: " + eventId + ", уже зарегистрировано максимальное кол-во участников");
+       // }
+
+        log.info("Количество запросов = {}", count);
+        log.info("Лимит участников события  = {}", event.getParticipantLimit());
+        if (user.equals(event.getInitiator()) || !event.getState().equals(State.PUBLISHED)
+                || (event.getParticipantLimit() != 0 && event.getParticipantLimit() == count)) {
+            throw new BadRequestDataException("Создатель события не может делать запрос");
+        }
         Request request = Request.builder()
                 .user(user)
                 .event(event)
                 .status(event.getParticipantLimit() == 0 ? RequestStatus.CONFIRMED : RequestStatus.PENDING)
                 .build();
+
         Request result = requestRepository.save(request);
         return RequestMapper.toParticipationRequestDto(result);
     }

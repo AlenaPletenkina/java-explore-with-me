@@ -77,7 +77,8 @@ public class EventServiceImpl implements EventService {
         if (isNull(rangeStart)) {
             rangeStart = String.valueOf(LocalDateTime.now());
         }
-        List<Event> events = eventRepository.getPublicEventsWithFilter(text.toLowerCase(), categories, paid, rangeStart,
+        text = isNull(text) ? null : text.toLowerCase();
+        List<Event> events = eventRepository.getPublicEventsWithFilter(text, categories, paid, rangeStart,
                 rangeEnd);
         sendStatistic(httpRequest);
         return events.stream()
@@ -251,9 +252,10 @@ public class EventServiceImpl implements EventService {
         if (!isNull(request.getEventDate())) {
             if (checkDateTime(request.getEventDate())) {
                 event.setEventDate(request.getEventDate());
+            } else {
+                log.error("Неверно указано время события {}", request.getEventDate());
+                throw new BadDataException("Неверно указано время события");
             }
-            log.error("Неверно указано время события {}", request.getEventDate());
-            throw new BadRequestDataException("Неверно указано время события");
         }
         if (!isNull(request.getLocation())) {
             event.setLat(request.getLocation().getLat());

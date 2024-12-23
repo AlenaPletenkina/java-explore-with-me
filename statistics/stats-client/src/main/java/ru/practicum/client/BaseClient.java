@@ -37,7 +37,8 @@ public class BaseClient {
                 "uris", uris,
                 "unique", unique != null ? unique : false
         );
-        ViewStatsDto[] result = restTemplate.getForObject(serverUrl + "/stats?start={start}&end={end}&uris={uris}&unique={unique}", ViewStatsDto[].class, parameters);
+        ViewStatsDto[] result = restTemplate.getForObject(serverUrl +
+                "/stats?start={start}&end={end}&uris={uris}&unique={unique}", ViewStatsDto[].class, parameters);
         return isNull(result) ? Collections.emptyList() : List.of(result);
     }
 }
