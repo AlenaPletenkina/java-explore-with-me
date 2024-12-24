@@ -13,7 +13,7 @@ import ru.practicum.ewmservice.category.service.CategoryService;
 @Slf4j
 public class AdminCategoryController {
     private final CategoryService categoryService;
-    private final String path = "/{cat-id}";
+    private final String path = "/{catId}";
 
     public AdminCategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
@@ -28,14 +28,14 @@ public class AdminCategoryController {
 
     @DeleteMapping(path)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCategory(@PathVariable("cat-id") Integer catId) {
+    public void deleteCategory(@PathVariable Integer catId) {
         log.info("Получил запрос на удаление категории.");
         categoryService.deleteCategory(catId);
     }
 
     @PatchMapping(path)
     public CategoryDto updateCategory(@RequestBody @Valid CategoryDto categoryDto,
-                                      @PathVariable("cat-id") Integer catId) {
+                                      @PathVariable Integer catId) {
         log.info("Получил запрос на обновление категории.");
         return categoryService.updateCategory(categoryDto, catId);
     }

@@ -14,7 +14,7 @@ import ru.practicum.ewmservice.compilation.service.CompilationService;
 @Slf4j
 public class AdminCompilationController {
     private final CompilationService compilationService;
-    private final String path = "/{comp-id}";
+    private final String path = "/{compId}";
 
     public AdminCompilationController(CompilationService compilationService) {
         this.compilationService = compilationService;
@@ -31,14 +31,14 @@ public class AdminCompilationController {
 
     @DeleteMapping(path)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCompilation(@PathVariable("comp-id") Integer compId) {
+    public void deleteCompilation(@PathVariable Integer compId) {
         log.info("Получил запрос на удаление подборки. {}", compId);
         compilationService.deleteCompilation(compId);
     }
 
     @PatchMapping(path)
     public CompilationDto updateCompilation(@RequestBody @Valid UpdateCompilationRequest updateCompilationRequest,
-                                            @PathVariable("comp-id") Integer compId) {
+                                            @PathVariable Integer compId) {
         log.info("Получил запрос на обновление подборки request: {}, compId: {}.", updateCompilationRequest, compId);
         CompilationDto compilationDto = compilationService.updateCompilation(updateCompilationRequest, compId);
         log.info("Получил ответ на обновление подборки, response: {}", compilationDto);

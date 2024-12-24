@@ -13,7 +13,7 @@ import java.util.List;
 @Slf4j
 public class PrivateRequestController {
     private final RequestService requestService;
-    private final String path = "/{user-id}/requests";
+    private final String path = "/{userId}/requests";
 
     public PrivateRequestController(RequestService requestService) {
         this.requestService = requestService;
