@@ -13,6 +13,7 @@ import ru.practicum.ewmservice.category.service.CategoryService;
 @Slf4j
 public class AdminCategoryController {
     private final CategoryService categoryService;
+    private final String path = "/{cat-id}";
 
     public AdminCategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
@@ -21,20 +22,20 @@ public class AdminCategoryController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CategoryDto createCategory(@RequestBody @Valid NewCategoryDto newCategoryDto) {
-        log.info("Получил запрос на создание категории.");
+        log.info("Поступил запрос на создание категории.");
         return categoryService.createCategory(newCategoryDto);
     }
 
-    @DeleteMapping("/{catId}")
+    @DeleteMapping(path)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCategory(@PathVariable Integer catId) {
+    public void deleteCategory(@PathVariable("cat-id") Integer catId) {
         log.info("Получил запрос на удаление категории.");
         categoryService.deleteCategory(catId);
     }
 
-    @PatchMapping("/{catId}")
+    @PatchMapping(path)
     public CategoryDto updateCategory(@RequestBody @Valid CategoryDto categoryDto,
-                                      @PathVariable Integer catId) {
+                                      @PathVariable("cat-id") Integer catId) {
         log.info("Получил запрос на обновление категории.");
         return categoryService.updateCategory(categoryDto, catId);
     }

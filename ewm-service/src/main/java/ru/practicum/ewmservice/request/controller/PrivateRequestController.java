@@ -13,18 +13,19 @@ import java.util.List;
 @Slf4j
 public class PrivateRequestController {
     private final RequestService requestService;
+    private final String path = "/{user-id}/requests";
 
     public PrivateRequestController(RequestService requestService) {
         this.requestService = requestService;
     }
 
-    @GetMapping("/{userId}/requests")
+    @GetMapping(path)
     public List<ParticipationRequestDto> getUserRequests(@PathVariable Integer userId) {
         return requestService.getUserRequests(userId);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/{userId}/requests")
+    @PostMapping(path)
     public ParticipationRequestDto createRequest(@PathVariable Integer userId,
                                                  @RequestParam Integer eventId) {
         log.info("Поступил запрос на участии в событии userId:{},eventId:{}", userId, eventId);

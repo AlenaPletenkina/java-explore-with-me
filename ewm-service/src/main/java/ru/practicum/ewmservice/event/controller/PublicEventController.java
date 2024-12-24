@@ -29,7 +29,7 @@ public class PublicEventController {
                                                @RequestParam(required = false) String rangeEnd,
                                                @RequestParam(defaultValue = "false") Boolean onlyAvailable,
                                                @RequestParam(required = false) Sort sort,
-                                               @RequestParam(defaultValue = "0")  Integer from,
+                                               @RequestParam(defaultValue = "0") Integer from,
                                                @RequestParam(defaultValue = "10") Integer size) {
         log.info("Получил запрос на получение публичных событий. Categories: {}", categories);
         return eventService.getPublicEvents(httpRequest, text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
