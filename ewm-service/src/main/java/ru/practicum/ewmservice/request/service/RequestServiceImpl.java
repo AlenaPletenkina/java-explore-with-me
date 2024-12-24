@@ -80,7 +80,7 @@ public class RequestServiceImpl implements RequestService {
 
     private void checkRequestData(Event event, User user) {
         long count = event.getRequests().stream()
-                .filter(it->it.getStatus().equals(RequestStatus.CONFIRMED))
+                .filter(it -> it.getStatus().equals(RequestStatus.CONFIRMED))
                 .count();
         log.info("Количество запросов = {}", count);
         log.info("Лимит участников события  = {}", event.getParticipantLimit());
