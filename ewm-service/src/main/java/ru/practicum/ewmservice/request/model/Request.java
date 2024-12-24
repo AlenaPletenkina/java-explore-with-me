@@ -14,7 +14,6 @@ import java.time.Instant;
 @NoArgsConstructor
 @Entity(name = "requests")
 @Builder
-@ToString
 @Table(indexes = {@Index(name = "multi_index",columnList = "requester_id,event_id",unique = true)})
 public class Request {
     @Id

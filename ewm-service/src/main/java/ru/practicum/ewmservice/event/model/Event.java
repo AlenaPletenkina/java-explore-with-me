@@ -1,10 +1,7 @@
 package ru.practicum.ewmservice.event.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.practicum.ewmservice.category.model.Category;
 import ru.practicum.ewmservice.event.dto.State;
 import ru.practicum.ewmservice.request.model.Request;
@@ -13,6 +10,7 @@ import ru.practicum.ewmservice.user.model.User;
 import java.util.List;
 
 @Data
+@ToString(exclude = "requests")
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

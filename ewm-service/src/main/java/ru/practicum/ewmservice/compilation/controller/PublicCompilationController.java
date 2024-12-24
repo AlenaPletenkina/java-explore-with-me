@@ -21,7 +21,7 @@ public class PublicCompilationController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<CompilationDto> getAllEvents(@RequestParam(required = false) boolean pinned,
+    public List<CompilationDto> getAllEvents(@RequestParam(required = false) Boolean pinned,
                                              @RequestParam(required = false, defaultValue = "0") Integer from,
                                              @RequestParam(required = false, defaultValue = "10") Integer size) {
         log.info("Получил запрос на получение списка всех событий.");

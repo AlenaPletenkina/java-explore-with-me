@@ -1,5 +1,6 @@
 package ru.practicum.ewmservice.compilation.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewmservice.compilation.dto.CompilationDto;
@@ -17,6 +18,7 @@ import java.util.List;
 import static java.util.Objects.isNull;
 
 @Service
+@Slf4j
 public class CompilationServiceImpl implements CompilationService {
     private final CompilationRepository compilationRepository;
     private final EventRepository eventRepository;
@@ -28,12 +30,23 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public List<CompilationDto> getAllEvents(Boolean pinned, Integer from, Integer size) {
-        return compilationRepository.findAll().stream()
-                .filter(compilation -> isNull(pinned) || compilation.getPinned() == pinned)
+        List<Compilation> all = compilationRepository.findAll();
+        List<CompilationDto> result = all.stream()
+                .filter(compilation -> {
+                    if (isNull(pinned)) {
+                        return true;
+                    } else if (isNull(compilation.getPinned())) {
+                        return false;
+                    }
+                    return compilation.getPinned().equals(pinned);
+                })
                 .skip(from)
                 .limit(size)
                 .map(CompilationMapper::toCompilationDto)
                 .toList();
+        log.info("Нашел все компиляции размером {}", all.size());
+        log.info("Отфильтровал компиляцию {}", result.size());
+        return result;
     }
 
     @Override

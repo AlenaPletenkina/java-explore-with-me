@@ -46,26 +46,27 @@ public class RequestServiceImpl implements RequestService {
     public ParticipationRequestDto createRequest(Integer userId, Integer eventId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         Event event = eventRepository.findById(eventId).orElseThrow();
-        long count = event.getRequests().size();
 
-        //if (count >= event.getParticipantLimit() ) {
-           // throw new BadRequestDataException("На мероприятие с ID: " + eventId + ", уже зарегистрировано максимальное кол-во участников");
-       // }
+        checkRequestData(event, user);
 
-        log.info("Количество запросов = {}", count);
-        log.info("Лимит участников события  = {}", event.getParticipantLimit());
-        if (user.equals(event.getInitiator()) || !event.getState().equals(State.PUBLISHED)
-                || (event.getParticipantLimit() != 0 && event.getParticipantLimit() == count)) {
-            throw new BadRequestDataException("Создатель события не может делать запрос");
-        }
         Request request = Request.builder()
                 .user(user)
                 .event(event)
-                .status(event.getParticipantLimit() == 0 ? RequestStatus.CONFIRMED : RequestStatus.PENDING)
+                .status(processStatus(event))
                 .build();
 
         Request result = requestRepository.save(request);
         return RequestMapper.toParticipationRequestDto(result);
+    }
+
+    private RequestStatus processStatus(Event event) {
+        if (!event.getRequestModeration()) {
+            return RequestStatus.CONFIRMED;
+        }
+        if (event.getParticipantLimit() == 0) {
+            return RequestStatus.CONFIRMED;
+        }
+        return RequestStatus.PENDING;
     }
 
     @Transactional
@@ -75,5 +76,20 @@ public class RequestServiceImpl implements RequestService {
         Request request = requestRepository.findById(requestId).orElseThrow();
         request.setStatus(RequestStatus.CANCELED);
         return RequestMapper.toParticipationRequestDto(request);
+    }
+
+    private void checkRequestData(Event event, User user) {
+        long count = event.getRequests().stream()
+                .filter(it->it.getStatus().equals(RequestStatus.CONFIRMED))
+                .count();
+        log.info("Количество запросов = {}", count);
+        log.info("Лимит участников события  = {}", event.getParticipantLimit());
+        if (user.equals(event.getInitiator())) {
+            throw new BadRequestDataException("Создатель события не может делать запрос");
+        } else if (!event.getState().equals(State.PUBLISHED)) {
+            throw new BadRequestDataException("Событие должно быть опубликовано");
+        } else if ((event.getParticipantLimit() > 0 && event.getParticipantLimit() <= count)) {
+            throw new BadRequestDataException("Достигнут лимит по заявкам на данное событие");
+        }
     }
 }

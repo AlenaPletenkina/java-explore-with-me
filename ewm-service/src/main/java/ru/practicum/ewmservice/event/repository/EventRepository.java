@@ -2,6 +2,7 @@ package ru.practicum.ewmservice.event.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import ru.practicum.ewmservice.event.dto.State;
 import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.user.model.User;
 
@@ -21,14 +22,13 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
                                     String rangeStart, String rangeEnd);
 
     @Query("SELECT event FROM Event event " +
-            "WHERE event.state='PUBLISHED'" +
+            "WHERE event.state= :state " +
             "AND (:text IS NULL OR (LOWER(event.description) LIKE %:text% OR LOWER(event.annotation) LIKE %:text%)) " +
-            "AND (:categories IS NULL OR event.category.id IN :categories) " +
-            "AND (:paid IS NULL OR event.paid IN :paid) " +
+            "AND (:paid IS NULL OR event.paid = :paid) " +
             "AND (:rangeStart IS NULL OR event.eventDate >= :rangeStart) " +
             "AND (:rangeEnd IS NULL OR event.eventDate <= :rangeEnd) " +
             "ORDER BY  event.eventDate ")
-    List<Event> getPublicEventsWithFilter(String text, List<Integer> categories, Boolean paid, String rangeStart,
+    List<Event> getPublicEventsWithFilter(State state, String text, Boolean paid, String rangeStart,
                                           String rangeEnd);
 
 

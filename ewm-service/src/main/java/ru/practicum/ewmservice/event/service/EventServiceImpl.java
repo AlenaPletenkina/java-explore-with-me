@@ -74,12 +74,16 @@ public class EventServiceImpl implements EventService {
     public List<EventShortDto> getPublicEvents(HttpServletRequest httpRequest, String text, List<Integer> categories,
                                                Boolean paid, String rangeStart,
                                                String rangeEnd, Boolean onlyAvailable, Sort sort, Integer from, Integer size) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         if (isNull(rangeStart)) {
-            rangeStart = String.valueOf(LocalDateTime.now());
+           // rangeStart = String.valueOf(LocalDateTime.now());
+        } else if (LocalDateTime.parse(rangeStart, formatter).isAfter(LocalDateTime.parse(rangeEnd, formatter))) {
+            throw new BadDataException("Дата окончания события не может быть раньше даты начала");
         }
         text = isNull(text) ? null : text.toLowerCase();
-        List<Event> events = eventRepository.getPublicEventsWithFilter(text, categories, paid, rangeStart,
+        List<Event> events = eventRepository.getPublicEventsWithFilter(PUBLISHED, text, paid, rangeStart,
                 rangeEnd);
+        log.info("Получил список событий: {}", events);
         sendStatistic(httpRequest);
         return events.stream()
                 .filter(event -> {
