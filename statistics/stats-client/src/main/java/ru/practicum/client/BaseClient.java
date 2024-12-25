@@ -10,38 +10,34 @@ import org.springframework.web.client.RestTemplate;
 import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.dto.ViewStatsDto;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Objects.isNull;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BaseClient {
-    final RestTemplate restTemplate;
+    final RestTemplate restTemplate = new RestTemplate();
     final String serverUrl = "http://stats-server:9090";
-    static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
 
-    public EndpointHitDto postHit(EndpointHitDto hit) {
+    public String postHit(EndpointHitDto hit) {
         HttpEntity<EndpointHitDto> requestEntity = new HttpEntity<>(hit);
-        return restTemplate.exchange(serverUrl + "/hit", HttpMethod.POST, requestEntity, EndpointHitDto.class).getBody();
+        return restTemplate.exchange(serverUrl + "/hit", HttpMethod.POST, requestEntity, String.class).getBody();
     }
 
-    public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> urisList, Boolean unique) {
-        String startDayTime = start.format(formatter);
-        String endDayTime = end.format(formatter);
-
+    public List<ViewStatsDto> getStats(String start, String end, List<String> urisList, Boolean unique) {
         String uris = String.join(",", urisList);
-
         Map<String, Object> parameters = Map.of(
-                "start", startDayTime,
-                "end", endDayTime,
+                "start", start,
+                "end", end,
                 "uris", uris,
                 "unique", unique != null ? unique : false
         );
-
-        return restTemplate.getForObject(serverUrl + "/stats?start={start}&end={end}&uris={uris}&unique={unique}", List.class, parameters);
+        ViewStatsDto[] result = restTemplate.getForObject(serverUrl +
+                "/stats?start={start}&end={end}&uris={uris}&unique={unique}", ViewStatsDto[].class, parameters);
+        return isNull(result) ? Collections.emptyList() : List.of(result);
     }
 }

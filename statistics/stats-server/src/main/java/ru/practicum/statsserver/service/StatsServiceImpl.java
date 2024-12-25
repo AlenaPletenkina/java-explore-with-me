@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.dto.ViewStatsDto;
+import ru.practicum.statsserver.exception.BadParameterException;
 import ru.practicum.statsserver.mapper.StatsMapper;
 import ru.practicum.statsserver.model.EndpointHit;
 import ru.practicum.statsserver.repository.StatsRepository;
@@ -38,6 +39,9 @@ public class StatsServiceImpl implements StatsService {
     public List<ViewStatsDto> getStatistics(String start, String end, List<String> uris, Boolean unique) {
         LocalDateTime parsedStart = LocalDateTime.parse(start, formatter);
         LocalDateTime parsedEnd = LocalDateTime.parse(end, formatter);
+        if (parsedStart.isAfter(parsedEnd)) {
+            throw new BadParameterException("Дата задана неверно");
+        }
         if (uris == null) {
             return convertToViewStatsDto(statsRepository.findAllElements(parsedStart, parsedEnd, unique));
         }
