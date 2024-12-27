@@ -2,10 +2,8 @@ package ru.practicum.ewmservice.comment.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import ru.practicum.ewmservice.comment.dto.CommentStatus;
 import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.user.model.User;
@@ -18,21 +16,22 @@ import java.time.LocalDateTime;
 @Entity
 @Builder
 @Table(name = "comments")
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    Integer id;
     @NotBlank
-    private String text;
+    String text;
     @JoinColumn(name = "event_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Event event;
+    Event event;
     @ManyToOne
     @JoinColumn(name = "author_id")
-    private User author;
+    User author;
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private CommentStatus status;
+    CommentStatus status;
     @Column(name = "created", nullable = false)
-    private LocalDateTime created;
+    LocalDateTime created;
 }
