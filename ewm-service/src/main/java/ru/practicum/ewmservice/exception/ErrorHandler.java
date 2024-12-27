@@ -1,5 +1,6 @@
 package ru.practicum.ewmservice.exception;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.ObjectNotFoundException;
 import org.postgresql.util.PSQLException;
@@ -40,6 +41,18 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handlerEmailConflictException(final BadDataException e) {
+        log.debug("Получен статус 409 CONFLICT {}", e.getMessage(), e);
+
+        return ApiError.builder()
+                .status(HttpStatus.BAD_REQUEST.toString())
+                .message(e.getMessage())
+                .reason("Integrity constraint has been violated.")
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handlerSqlValidationException(final ConstraintViolationException e) {
         log.debug("Получен статус 409 CONFLICT {}", e.getMessage(), e);
 
         return ApiError.builder()

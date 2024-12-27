@@ -3,6 +3,7 @@ package ru.practicum.ewmservice.event.model;
 import jakarta.persistence.*;
 import lombok.*;
 import ru.practicum.ewmservice.category.model.Category;
+import ru.practicum.ewmservice.comment.model.Comment;
 import ru.practicum.ewmservice.event.dto.State;
 import ru.practicum.ewmservice.request.model.Request;
 import ru.practicum.ewmservice.user.model.User;
@@ -45,6 +46,7 @@ public class Event {
     private String title;
     private Integer views;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "event", fetch = FetchType.EAGER)
-    //@JoinColumn(name = "request_id")
     private List<Request> requests;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "event", fetch = FetchType.EAGER)
+    private List<Comment> comments;
 }

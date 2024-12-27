@@ -76,7 +76,7 @@ public class EventServiceImpl implements EventService {
                                                String rangeEnd, Boolean onlyAvailable, Sort sort, Integer from, Integer size) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         if (isNull(rangeStart)) {
-           // rangeStart = String.valueOf(LocalDateTime.now());
+            // rangeStart = String.valueOf(LocalDateTime.now());
         } else if (LocalDateTime.parse(rangeStart, formatter).isAfter(LocalDateTime.parse(rangeEnd, formatter))) {
             throw new BadDataException("Дата окончания события не может быть раньше даты начала");
         }

@@ -1,6 +1,7 @@
 package ru.practicum.ewmservice.event.mapper;
 
 import ru.practicum.ewmservice.category.mapper.CategoryMapper;
+import ru.practicum.ewmservice.comment.mapper.CommentMapper;
 import ru.practicum.ewmservice.event.dto.*;
 import ru.practicum.ewmservice.event.model.Event;
 import ru.practicum.ewmservice.request.model.Request;
@@ -50,6 +51,9 @@ public class EventMapper {
                 .confirmedRequests(isNull(requests) ? 0 : requests.stream()
                         .filter(request -> CONFIRMED.equals(request.getStatus()))
                         .count())
+                .comments(isNull(event.getComments()) ? null : event.getComments().stream()
+                        .map(CommentMapper::toCommentShortDto)
+                        .toList())
                 .build();
     }
 
